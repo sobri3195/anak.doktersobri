@@ -33,12 +33,12 @@ export const Layout = () => {
     <div className={darkMode ? 'app dark' : 'app'}>
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`.trim()}>
         <button onClick={() => setCollapsed((v) => !v)}>☰</button>
-        <h2>{collapsed ? 'a.s' : 'anak.sobri'}</h2>
-        {nav.map(([to, label, Icon]) => (
-          <Link key={to} to={to} onClick={() => setMobileOpen(false)}>
-            <Icon size={16} /> {!collapsed && label}
-          </Link>
-        ))}
+        <h2 className="brand">
+          <img src="/logo.svg" alt="Logo anak.sobri" />
+          {!collapsed && <span>anak.sobri</span>}
+          {collapsed && <span>a.s</span>}
+        </h2>
+        {nav.map(([to, label, Icon]) => <Link key={to} to={to}><Icon size={16} /> {!collapsed && label}</Link>)}
       </aside>
       {mobileOpen && <button className="sidebar-backdrop" aria-label="Close menu" onClick={() => setMobileOpen(false)} />}
       <main>
