@@ -8,6 +8,9 @@ interface Props {
 
 export const ChartGrowth = ({ standard, points }: Props) => {
   const ref = growthDataset[`${standard}_BB_U`];
+  const latestPoint = points.length > 0 ? points[points.length - 1] : undefined;
+  const latestRef = ref.length > 0 ? ref[ref.length - 1] : undefined;
+
   return (
     <div style={{ height: 320 }}>
       <ResponsiveContainer>
@@ -21,7 +24,7 @@ export const ChartGrowth = ({ standard, points }: Props) => {
           <Line data={points} dataKey="weightKg" stroke="#3b82f6" />
         </LineChart>
       </ResponsiveContainer>
-      {points.at(-1) && ref.at(-1) && <p>Status terakhir: {interpretWeight(points.at(-1)!.weightKg, ref.at(-1)!.p3, ref.at(-1)!.p97)}</p>}
+      {latestPoint && latestRef && <p>Status terakhir: {interpretWeight(latestPoint.weightKg, latestRef.p3, latestRef.p97)}</p>}
     </div>
   );
 };
