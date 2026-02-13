@@ -22,10 +22,21 @@ const appSchema = z.object({
 export const migrate = (raw: any): AppData => {
   const base = initialData();
   if (!raw || typeof raw !== 'object') return base;
+  const legacySettings = raw.settings && typeof raw.settings === 'object' ? raw.settings : undefined;
+
+  if (raw.darkMode === undefined && typeof legacySettings?.darkMode === 'boolean') {
+    raw.darkMode = legacySettings.darkMode;
+  }
+
+  if ((!raw.growth || typeof raw.growth !== 'object') && legacySettings?.growth && typeof legacySettings.growth === 'object') {
+    raw.growth = legacySettings.growth;
+  }
+
   const version = raw.storageVersion ?? 1;
 
   if (version < 2) {
     raw.darkMode = raw.darkMode ?? false;
+    raw.growth = raw.growth ?? base.growth;
     raw.storageVersion = 2;
   }
 
