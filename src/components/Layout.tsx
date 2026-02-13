@@ -16,6 +16,7 @@ const nav = [
 
 export const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { darkMode, toggleDarkMode, search, setSearch, children, drugs, guidelines } = useAppStore();
 
   const globalResults = useMemo(() => {
@@ -30,13 +31,19 @@ export const Layout = () => {
 
   return (
     <div className={darkMode ? 'app dark' : 'app'}>
-      <aside className={collapsed ? 'sidebar collapsed' : 'sidebar'}>
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`.trim()}>
         <button onClick={() => setCollapsed((v) => !v)}>☰</button>
         <h2>{collapsed ? 'a.s' : 'anak.sobri'}</h2>
-        {nav.map(([to, label, Icon]) => <Link key={to} to={to}><Icon size={16} /> {!collapsed && label}</Link>)}
+        {nav.map(([to, label, Icon]) => (
+          <Link key={to} to={to} onClick={() => setMobileOpen(false)}>
+            <Icon size={16} /> {!collapsed && label}
+          </Link>
+        ))}
       </aside>
+      {mobileOpen && <button className="sidebar-backdrop" aria-label="Close menu" onClick={() => setMobileOpen(false)} />}
       <main>
         <header className="topbar">
+          <button className="mobile-menu-btn" aria-label="Open menu" onClick={() => setMobileOpen(true)}>☰</button>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari anak/obat/guideline/rumus" />
           <div className="quick-actions">
             <button onClick={toggleDarkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
