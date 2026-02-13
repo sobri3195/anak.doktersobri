@@ -20,7 +20,11 @@ export const ChildDetailPage = () => {
   const child = children.find((c) => c.id === id);
   const rows = measurements.filter((m) => m.childId === id).sort((a, b) => a.date.localeCompare(b.date));
 
-  const points = useMemo(() => rows.map((m) => ({ ageMonths: calculateAgeMonths(child!.dob), weightKg: m.weightKg })), [rows, child]);
+  const points = useMemo(() => rows.map((m) => ({
+    ageMonths: Math.max(0, Math.floor((new Date(m.date).getTime() - new Date(child!.dob).getTime()) / (1000 * 60 * 60 * 24 * 30.4375))),
+    weightKg: m.weightKg,
+    date: m.date,
+  })), [rows, child]);
   if (!child) return <p>Anak tidak ditemukan</p>;
 
   return (

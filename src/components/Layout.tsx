@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { Activity, BookOpen, Calculator, Home, Moon, Settings, Sun } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useAppStore } from '../store/useAppStore';
@@ -38,17 +38,21 @@ export const Layout = () => {
           {!collapsed && <span>anak.sobri</span>}
           {collapsed && <span>a.s</span>}
         </h2>
-        {nav.map(([to, label, Icon]) => <Link key={to} to={to}><Icon size={16} /> {!collapsed && label}</Link>)}
+        {nav.map(([to, label, Icon]) => (
+          <NavLink key={to} to={to} className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+            <Icon size={16} /> {!collapsed && label}
+          </NavLink>
+        ))}
       </aside>
       {mobileOpen && <button className="sidebar-backdrop" aria-label="Close menu" onClick={() => setMobileOpen(false)} />}
       <main>
         <header className="topbar">
           <button className="mobile-menu-btn" aria-label="Open menu" onClick={() => setMobileOpen(true)}>☰</button>
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari anak/obat/guideline/rumus" />
+          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Cari anak/obat/guideline/rumus" aria-label="Pencarian global" />
           <div className="quick-actions">
-            <button onClick={toggleDarkMode}>{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
-            <Link to="/anak">+ Anak</Link>
-            <Link to="/rumus">+ Hitung</Link>
+            <button className="icon-btn" onClick={toggleDarkMode} aria-label="Toggle dark mode">{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
+            <Link className="btn ghost" to="/anak">+ Anak</Link>
+            <Link className="btn" to="/rumus">+ Hitung</Link>
           </div>
         </header>
         {!!globalResults.length && <div className="search-results">{globalResults.map((item) => <p key={item}>{item}</p>)}</div>}
