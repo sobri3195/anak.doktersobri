@@ -1,4 +1,4 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { Activity, BookOpen, Calculator, Home, Moon, Settings, Sun } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useAppStore } from '../store/useAppStore';
@@ -17,6 +17,7 @@ const nav = [
 export const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
   const { darkMode, toggleDarkMode, search, setSearch, children, drugs, guidelines } = useAppStore();
 
   const globalResults = useMemo(() => {
@@ -52,7 +53,13 @@ export const Layout = () => {
           <div className="quick-actions">
             <button className="icon-btn" onClick={toggleDarkMode} aria-label="Toggle dark mode">{darkMode ? <Sun size={16} /> : <Moon size={16} />}</button>
             <Link className="btn ghost" to="/anak">+ Anak</Link>
-            <Link className="btn" to="/rumus">+ Hitung</Link>
+            {location.pathname === '/growth' ? (
+              <Link className="btn btn-primary" to={children.length > 0 ? `/anak/${children[0].id}` : '/anak'}>
+                <span className="icon-plus">+</span> Tambah Pengukuran
+              </Link>
+            ) : (
+              <Link className="btn" to="/rumus">+ Hitung</Link>
+            )}
           </div>
         </header>
         {!!globalResults.length && <div className="search-results">{globalResults.map((item) => <p key={item}>{item}</p>)}</div>}

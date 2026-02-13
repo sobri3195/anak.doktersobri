@@ -23,28 +23,45 @@ export const GrowthPage = () => {
   if (!child) {
     return (
       <section>
-        <h1>Grafik Pertumbuhan ({growth.standard})</h1>
-        <p>Belum ada profil anak. Tambahkan data anak terlebih dahulu.</p>
-        <Link className="btn" to="/anak">+ Tambah Anak</Link>
+        <div className="page-head">
+          <div>
+            <h1>Pertumbuhan Anak (Standar {growth.standard})</h1>
+            <p className="muted">Belum ada profil anak. Tambahkan data anak terlebih dahulu.</p>
+          </div>
+          <div className="page-actions">
+            <Link className="btn btn-primary" to="/anak">
+              <span className="icon-plus">+</span> Tambah Anak
+            </Link>
+          </div>
+        </div>
       </section>
     );
   }
+
+  const metricLabel = growth.metric === 'BB_U' ? 'Berat badan menurut umur (BB/U)' :
+                      growth.metric === 'TB_U' ? 'Tinggi badan menurut umur (TB/U)' :
+                      growth.metric === 'PB_U' ? 'Panjang badan menurut umur (PB/U)' :
+                      growth.metric === 'BB_TB' ? 'Berat badan menurut tinggi badan (BB/TB)' :
+                      growth.metric === 'IMT_U' ? 'Indeks Massa Tubuh menurut umur (IMT/U)' :
+                      growth.metric === 'LK_U' ? 'Lingkar kepala menurut umur (LK/U)' : growth.metric;
 
   return (
     <section>
       <div className="page-head">
         <div>
-          <h1>Grafik Pertumbuhan Anak ({growth.standard})</h1>
-          <p className="muted">Mode metrik aktif: {growth.metric} · Usia saat ini {calculateAgeMonths(child.dob)} bulan</p>
+          <h1>Pertumbuhan Anak (Standar {growth.standard})</h1>
+          <p className="muted">Metrik aktif: {metricLabel} · Usia saat ini {calculateAgeMonths(child.dob)} bulan</p>
         </div>
         <div className="page-actions">
           <select value={child.id} onChange={(e) => setSelectedChildId(e.target.value)} aria-label="Pilih anak">
             {children.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
           </select>
-          <Link className="btn" to={`/anak/${child.id}`}>+ Tambah Pengukuran</Link>
+          <Link className="btn btn-primary" to={`/anak/${child.id}`}>
+            <span className="icon-plus">+</span> Tambah Pengukuran
+          </Link>
         </div>
       </div>
-      <ChartGrowth standard={growth.standard} points={points} />
+      <ChartGrowth standard={growth.standard} points={points} childName={child.name} />
     </section>
   );
 };
