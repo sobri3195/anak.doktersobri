@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import type { AppData, ChildProfile, DoseTemplate, FormulaResult, Measurement } from '../types';
+import { initialData } from '../data/seeds';
 import { importBackup, loadData, saveData } from '../utils/storage';
 
 interface AppStore extends AppData {
@@ -19,14 +20,29 @@ interface AppStore extends AppData {
 }
 
 const persist = (setter: (state: AppStore) => Partial<AppStore>) => (set: any) =>
-  set((state: AppStore) => {
-    const next = { ...state, ...setter(state) };
+  set((state: AppStore | undefined) => {
+    const current = state ?? ({ ...initialData(), search: '' } as AppStore);
+    const next = { ...current, ...setter(current) };
     saveData(next);
     return next;
   });
 
+const buildInitialState = (): AppData => {
+  const base = initialData();
+  const loaded = loadData();
+  return {
+    ...base,
+    ...loaded,
+    growth: {
+      ...base.growth,
+      ...loaded.growth,
+    },
+    darkMode: loaded.darkMode ?? base.darkMode,
+  };
+};
+
 export const useAppStore = create<AppStore>((set) => ({
-  ...loadData(),
+  ...buildInitialState(),
   search: '',
   setSearch: (v) => set({ search: v }),
   toggleDarkMode: persist((s) => ({ darkMode: !s.darkMode }))(set),
