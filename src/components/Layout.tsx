@@ -32,7 +32,11 @@ export const Layout = () => {
     <div className={darkMode ? 'app dark' : 'app'}>
       <aside className={collapsed ? 'sidebar collapsed' : 'sidebar'}>
         <button onClick={() => setCollapsed((v) => !v)}>☰</button>
-        <h2>{collapsed ? 'a.s' : 'anak.sobri'}</h2>
+        <h2 className="brand">
+          <img src="/logo.svg" alt="Logo anak.sobri" />
+          {!collapsed && <span>anak.sobri</span>}
+          {collapsed && <span>a.s</span>}
+        </h2>
         {nav.map(([to, label, Icon]) => <Link key={to} to={to}><Icon size={16} /> {!collapsed && label}</Link>)}
       </aside>
       <main>
